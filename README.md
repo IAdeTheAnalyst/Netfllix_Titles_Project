@@ -29,7 +29,5 @@ This project explores the Netflix content catalog using PostgreSQL to uncover tr
 - Grouping and sorting to derive insights
 - Data cleaning for multi-country and multi-genre fields
 
----
-
-## 📁 Folder Structure
+--- 
 
