@@ -1,2 +1,299 @@
-Select 
-From 
+-- Which country has produced the most Netflix content overall? List the top 10.
+
+select 
+	trim(unnest(string_to_array(country, ','))) as countries,
+	count(*) as content_			
+from portfolio.netflix
+group by countries
+order by content_ desc 
+limit 10
+
+
+-- How many movies and TV shows does Netflix have in total? Break it down by type.
+
+select 	
+	"type",
+	count(*) 
+from portfolio.netflix
+group by "type"
+
+
+-- What are the top 5 most common genres on Netflix across all content types?
+
+
+select 
+	trim(unnest(string_to_array(listed_in, ','))) as genres,
+	count(*) contents
+from portfolio.netflix
+group by genres
+order by contents desc
+limit 5
+
+
+
+-- What is the average duration of movies on Netflix?
+
+
+select 
+	concat(round(avg(num),0), ' mins') as avg_duration
+from(
+		select 
+			cast(regexp_replace(duration, '\D', '', 'g')as int) as num
+		from portfolio.netflix
+		where "type" = 'Movie'
+)
+
+
+-- What is the average number of seasons for TV shows on the platform?
+
+
+select 	
+	concat(round(avg(num),0), ' seassons') as avg_seasons
+from(
+	select 
+		cast(regexp_replace(duration, '\D', '', 'g') as int) as num
+	from portfolio.netflix
+	where "type" = 'TV Show'
+)
+	
+
+
+
+-- How has the number of Netflix titles added per year changed over time?
+
+
+select 
+	extract(year from date_added) as years,
+	count(*) as num_titles
+from portfolio.netflix
+group by years
+order by years asc 
+
+
+-- Which year had the highest number of content releases on Netflix?
+
+
+select 
+	extract(year from date_added) as years,
+	count(*) as num_titles
+from portfolio.netflix
+group by years
+order by num_titles desc
+limit 1
+
+
+-- Which director has the most titles on Netflix?
+
+
+select 	
+	director,
+	count (*) as  num_titles
+from portfolio.netflix
+group by director 
+order by num_titles desc
+limit 1
+
+
+-- Which actors/actresses appear most frequently across all titles?
+
+
+select 
+	trim(unnest(string_to_array("cast", ','))) as actors,
+	count(*) as titles
+from portfolio.netflix
+group by actors
+order by titles desc
+limit 10
+
+
+-- What percentage of Netflix content is international (non-U.S.)?
+-- 5332 Total Count 
+
+
+select
+	round((sum(content_)/5332)*100,2) as "% of International Content"
+from(
+		select 
+			countries,
+			count(*) as content_
+from(	
+		select 
+			trim(unnest(string_to_array(country, ','))) as countries 
+		from portfolio.netflix
+)
+where countries not ilike '%united states%'
+group by countries )
+
+
+
+-- What are the most frequent combinations of country and content type?
+
+
+select 
+	country,
+	"type",
+	count(*) as num
+from portfolio.netflix
+group by country,"type"
+order by num desc
+
+
+-- Which countries produce the most TV shows vs. movies?
+
+
+select 
+	trim(unnest(string_to_array(country, ','))) as countries,
+	count(*) filter (where "type" = 'Movie') as "Movies",
+	count(*) filter (where "type" = 'TV Show') as "TV Shows"
+from portfolio.netflix
+group by countries 
+order by "Movies" desc, "TV Shows" desc
+limit 10
+
+
+
+-- How many Netflix titles were released each month, across all years?
+
+
+select 
+	years,
+	count(*) filter (where months = 1) as January,
+	count(*) filter (where months = 2) as February,
+	count(*) filter (where months = 3) as March,
+	count(*) filter (where months = 4) as April,
+	count(*) filter (where months = 5) as May,
+	count(*) filter (where months = 6) as June,
+	count(*) filter (where months = 7) as July,
+	count(*) filter (where months = 8) as August,
+	count(*) filter (where months = 9) as September,
+	count(*) filter (where months = 10) as October,
+	count(*) filter (where months = 11) as November,
+	count(*) filter (where months = 12) as December
+from(
+		select
+			extract(year from date_added) as years,
+			extract(month from date_added) as months
+		from portfolio.netflix
+)
+group by years
+order by years asc
+
+
+-- What is the distribution of content ratings (e.g., TV-MA, PG-13)?
+
+
+select
+	rating,
+	count(*) as contents
+from portfolio.netflix
+group by rating 
+
+
+-- Which genres are most popular in India compared to the United States?
+
+
+select 
+	genres,
+	count(*) filter (where  countries = 'India') as "India",
+	count(*) filter (where countries = 'United States') as "United States"
+from(
+		select 
+			trim(unnest(string_to_array(country, ','))) as countries,
+			trim(unnest(string_to_array(listed_in, ','))) as genres
+		from portfolio.netflix
+)
+where genres is  not null
+group by genres
+having count(*) filter (where  countries = 'India') > count(*) filter (where countries = 'United States')
+order by "India" desc
+
+
+-- How many titles contain keywords like 'love', 'war', or 'crime' in the description?
+
+
+select 
+	count(*) as "# of titles"
+from portfolio.netflix
+where  description ilike '%love%' 
+	or description ilike  '%war%' 
+	or description ilike '%crime%' 
+
+
+-- Which titles have the longest and shortest durations on Netflix?
+
+
+
+select 
+	(array_agg(title order by num desc))[1] as "Longest Show/Movie",
+	(array_agg(title order by num asc))[1] as "Shortest Show/Movie"
+	
+	
+from(
+		select 
+			title,
+			regexp_replace(duration, '\D', '', 'g') as num 
+		from portfolio.netflix
+		where "type" = 'TV Show'
+)
+
+union all
+
+		select 
+			(array_agg(title order by num desc))[1] as "Longest Movie",
+			(array_agg(title order by num asc))[1] as "Shortest Movie"
+			
+		from(
+				select 
+					title,
+					cast(regexp_replace(duration, '\D', '', 'g')as int) as num 
+				from portfolio.netflix as n
+				where "type" = 'Movie'
+		)
+
+
+-- Are there any duplicate titles or suspicious entries in the dataset?
+
+
+select 
+	title,
+	count(*) 
+from portfolio.netflix
+group by 
+	title,
+	"type",
+	director,
+	"cast",
+	country,
+	date_added,
+	release_year,
+	rating,
+	duration,
+	listed_in,
+	description
+having count(*) > 1
+
+
+-- What are the most common words used in the titles of Netflix shows and movies?
+
+
+select 
+	lower(trim(unnest(string_to_array(title, ' ')))) as words,
+	count (*) as "# used"
+from portfolio.netflix
+group by words
+having count(*) > 1
+order by "# used" desc
+
+
+
+ 
+-- What are the most recent 5 titles added to Netflix, and what countries are they from?
+
+
+select 
+	title,
+	country
+from portfolio.netflix
+order by date_added desc
+limit 5
+
