@@ -1,68 +1,53 @@
 # 📺 Netflix Titles Project — PostgreSQL Data Analysis
 
-This project uses PostgreSQL to explore Netflix's global content library. It uncovers trends in genre popularity, country-wise content distribution, and recurring themes in show descriptions. The analysis also highlights changes in release patterns over time and audience content preferences based on region and type.
+This project analyzes Netflix’s global content catalog to uncover trends in genre popularity, international distribution, seasonal release patterns, and viewer-targeted content. The analysis focuses on identifying what types of content dominate the platform and how different countries contribute to Netflix’s library.
 
----
+## 🧠 Key Business Questions
+1. Which countries have contributed the most content to Netflix?
+2. What’s the total number of Movies vs. TV Shows?
+3. What are the most common genres on Netflix?
+4. What is the average duration of a movie or TV show?
+5. How has content addition changed over the years?
+6. Who are the top directors and most frequent actors?
+7. How much of Netflix’s library is international content?
+8. What are the most popular country–content type combinations?
+9. Which countries produce more TV shows compared to movies?
+10. How many titles are released each month?
+11. What is the distribution of content ratings?
+12. Which genres are more popular in India vs. the U.S.?
+13. How many titles mention key words like “love,” “war,” or “crime”?
+14. What are the longest and shortest titles?
+15. Are there any duplicate or suspicious entries?
+16. What are the most common words used in Netflix titles?
+17. What are the 5 most recently added titles?
 
-## 📊 Project Overview
+## 📊 Tools Used
+- **SQL (PostgreSQL)**
+- **String Functions & Regex**
+- **CTEs and Subqueries**
+- **Aggregate Functions**
+- **UNNEST & STRING_TO_ARRAY**
+- **CASE & FILTER Clauses**
 
-**Goal**: Analyze Netflix's title catalog to identify genre trends, global reach, content characteristics, and user-facing patterns.  
-**Dataset**: Netflix Titles Dataset from Kaggle  
-**Tools Used**: PostgreSQL, SQL (CTEs, window functions, UNNEST, string_to_array, FILTER, ILIKE, COUNT, subqueries)
+## 📌 Key Insights
+- **Country Trends:** The United States leads in content count, but countries like India, the UK, and Canada have strong representation.
+- **Content Mix:** Movies dominate the platform, but TV shows make up a significant share with longer durations (measured in seasons).
+- **Popular Genres:** International Dramas, Comedies, and Documentaries are among the top genres globally.
+- **Growth Over Time:** The number of titles added has steadily increased until a slight decline in recent years.
+- **Top Contributors:** Certain directors and actors appear frequently, offering opportunities for targeted promotion or content acquisition.
+- **Global Reach:** Over 30% of Netflix’s content is international, indicating strong global expansion.
+- **Regional Preferences:** India tends to feature more content in genres like Action & Adventure, while the U.S. leans toward Dramas and Comedies.
+- **Content Ratings:** TV-MA and PG-13 are the most prevalent ratings, highlighting the platform’s focus on mature audiences.
+- **Seasonality:** July and October show spikes in new content releases, aligning with strategic seasonal drops.
+- **Title Analysis:** Common title words include "Love", "Life", and "The", revealing emotional or universal themes.
 
----
+## 📂 Dataset Overview
+This dataset contains metadata for thousands of Netflix titles and includes:
+- Title, Type (Movie or TV Show)
+- Director, Cast, Country
+- Date Added, Release Year
+- Duration, Rating
+- Genres (listed_in)
+- Description
 
-## 🔍 Key Questions Answered
-
-- Which country has produced the most Netflix content?
-- How many total movies vs. TV shows are on Netflix?
-- What are the top 5 most common genres across all content?
-- What is the average movie duration and average number of TV show seasons?
-- Which year had the most titles added? How has content volume changed over time?
-- Who are the most featured directors and actors?
-- What % of Netflix content is international (non-U.S.)?
-- Which countries produce more TV shows than movies?
-- What are the most frequent combinations of country and content type?
-- What are the most used words in Netflix title names?
-- Which titles are the longest and shortest?
-- How many titles include keywords like “love,” “war,” or “crime”?
-- Are there duplicate entries or suspicious data records?
-
----
-
-## 🛠 Techniques & Concepts
-
-- **Multi-value field parsing** using `string_to_array()` + `UNNEST`
-- **Conditional aggregation** with `FILTER`, `COUNT`, and `ILIKE`
-- **Regex-based extraction** of numerical values from string durations
-- **Window functions** for ranking titles and latest additions
-- **Subqueries & CTEs** for intermediate calculations and reusability
-- **Data validation** via duplicate checks and data consistency reviews
-
----
-
-## 📈 Insights & Outcomes
-
-- The United States has the highest content volume, followed by India and the UK.
-- "Drama" and "International Movies" are the most frequent genres.
-- Average movie length is around 100 minutes; TV shows average 2–3 seasons.
-- Content additions peaked around 2019–2020.
-- Top actors and directors appear in 50+ titles each.
-- Over **40%** of content is international, showcasing Netflix’s global focus.
-- Sundays and July are peak release times historically.
-- Titles with themes like "love" and "war" are highly prevalent.
-- Duplicate titles and unusual entries were found, prompting potential data cleaning.
-
----
-
-## 🔗 Related Projects
-
-- [🛒 Instacart Orders Project](https://github.com/yourusername/instacart-project)
-- [🍽️ Nova Restaurant Project](https://github.com/yourusername/nova-project)
-
----
-
-## 👤 About Me
-
-**Your Name**  
-[Portfolio Website](https://yourwebsite.com) • [LinkedIn](https://linkedin.com)
+> **Source:** [Netflix Movies and TV Shows Dataset | Kaggle](https://www.kaggle.com/shivamb/netflix-shows)
